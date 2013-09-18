@@ -1,0 +1,31 @@
+<html>
+<body>
+    <script src="//www.gstatic.com/cast/js/receiver/1.0/cast_receiver.js"></script>
+    
+    <script>
+    var receiver = new cast.receiver.Receiver('APP ID HERE', ['mkvcast']);
+    var channelHandler = new cast.receiver.ChannelHandler('mkvcast');
+    
+    channelHandler.addChannelFactory(receiver.createChannelFactory('mkvcast'));
+    
+    receiver.start();
+    
+    channelHandler.addEventListener(cast.receiver.Channel.EventType.MESSAGE, onMessage.bind(this));
+            
+    function onMessage(event) {
+        console.log('event found!');
+
+        var video = document.createElement('video');
+        video['autoplay'] = 'autoplay';
+        // TODO build app controls
+        video['controls'] = 'controls';
+        
+        video.style = 'position:absolute;top:0;left:0;height:100%;width:100%';
+        
+        video['src'] = event.message.mediaUrl;
+        
+        document.body.appendChild(video);
+    }
+    </script>
+</body>
+</html>

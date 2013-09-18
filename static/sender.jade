@@ -1,0 +1,33 @@
+!!!
+html(data-cast-api-enabled="true")
+body
+    script.
+        var cast_api;
+    
+        var initializeApi = function() {
+            if (!cast_api) {
+                cast_api = new cast.Api();
+                cast_api.addReceiverListener('#{appId}', onReceiverList);
+            }
+        };
+    
+        var onReceiverList = function(list) {
+            if (!list.length) { return; }
+            // TODO Currently we're only supporting one chromecast at a time
+            var receiver = list[0];
+            var request = new cast.LaunchRequest('#{appId}', receiver);
+            cast_api.launch(request, sendUrl);
+        };
+        
+        var sendUrl = function(activity) {
+            cast_api.sendMessage(activity.activityId, 'mkvcast', { mediaUrl : '#{mediaUrl}' });
+        };
+
+        window.addEventListener('message', function(event) {
+            if (event.source === window && event.data &&
+                    event.data.source === 'CastApi' &&
+                    event.data.event === 'Hello') {
+                initializeApi();
+           
+            }
+        });
