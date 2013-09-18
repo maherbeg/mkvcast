@@ -20,7 +20,7 @@ git clone https://github.com/maherbeg/mkvcast.git
 cd mkvcast
 npm install
 node ./lib/mkvcast <appId> <filename>
-open 'http://localhost:1337/'
+open 'http://localhost:1338/sender'
 ```
 
 ## Todo
