@@ -19,12 +19,29 @@ brew install node
 git clone https://github.com/maherbeg/mkvcast.git
 cd mkvcast
 npm install
-node ./lib/mkvcast <appId> <filename>
+node ./lib/mkvcast <config file>
 open 'http://localhost:1338/sender'
 ```
 
+## Configuration
+### config.json
+The following keys need to be saved in a 'config.json' that is passed into the application.
+```json
+{
+    "applicationId" : "Your app ID here",
+    "mediaDirectories" : [
+        "/Users/someuser/Downloads/",
+        "/Volumes/harddrive/Media/"
+    ]
+}
+```
+### mkvcast.config.js
+Place a javascript file in the same directory as where your receiver.html file lives.
+```javascript
+var appId = 'Your app ID here';
+```
+
 ## Todo
-* Serve more than just a passed in file. There should be a config.json file that contains directory paths to serve.
 * A responsive sender UI that will show all the files to serve as well as a list of Chromecasts to serve.
 * Interface for pausing/playing/setting the volume of the Chromecast
 * UI on the Chromecast

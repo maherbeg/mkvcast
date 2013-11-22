@@ -1,0 +1,12 @@
+!!!5
+html
+body
+    ul
+        each file in dirContents
+            li
+                if file.isDirectory
+                    a(href='/list/' + file.filePath).directory
+                        = file.displayName
+                else
+                    a(href='/send/' + file.filePath).file
+                        = file.displayName

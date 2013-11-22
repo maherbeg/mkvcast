@@ -1,9 +1,15 @@
 <html>
+<head>
+    <style>
+    body { text-align: center; }
+    </style>
+</head>
 <body>
     <script src="//www.gstatic.com/cast/js/receiver/1.0/cast_receiver.js"></script>
+    <script src="mkvcast.config.js"></script>
     
     <script>
-    var receiver = new cast.receiver.Receiver('APP ID HERE', ['mkvcast']);
+    var receiver = new cast.receiver.Receiver(appId, ['mkvcast']);
     var channelHandler = new cast.receiver.ChannelHandler('mkvcast');
     
     channelHandler.addChannelFactory(receiver.createChannelFactory('mkvcast'));
@@ -20,11 +26,12 @@
         // TODO build app controls
         video['controls'] = 'controls';
         
-        video.style = 'position:absolute;top:0;left:0;height:100%;width:100%';
+        video.style = 'position:absolute;top:0;left:0;height:100%;width:100%;margin: 0 auto;display:block;';
         
         video['src'] = event.message.mediaUrl;
         
         document.body.appendChild(video);
+        video.webkitRequestFullScreen();
     }
     </script>
 </body>

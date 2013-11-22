@@ -1,0 +1,18 @@
+{
+  "name": "mkvcast",
+  "version": "0.1.0",
+  "homepage": "https://github.com/maherbeg/mkvcast",
+  "authors": [
+    "Maher Beg <maherbeg@gmail.com>"
+  ],
+  "description": "Send MKVs to a Chromecast",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
