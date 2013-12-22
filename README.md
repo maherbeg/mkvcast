@@ -19,8 +19,10 @@ brew install node
 git clone https://github.com/maherbeg/mkvcast.git
 cd mkvcast
 npm install
+npm install -g bower
+bower install
 node ./lib/mkvcast <config file>
-open 'http://localhost:1338/sender'
+open 'http://localhost:1338/list'
 ```
 
 ## Configuration
