@@ -1,12 +1,33 @@
 !!!5
 html
+    head
+        title mkvcast
+        link(rel='stylesheet' href='/components/bootstrap/dist/css/bootstrap.min.css')
 body
-    ul
-        each file in dirContents
-            li
-                if file.isDirectory
-                    a(href='/list/' + file.filePath).directory
-                        = file.displayName
+    .jumbotron
+        .container
+            h1 mkvcast
+            p= nowPlaying
+    .container
+        ol.breadcrumb
+            each pathComponent, i in dirPaths
+                if i == dirPaths.length - 1
+                    li.active= pathComponent
                 else
-                    a(href='/send/' + file.filePath).file
-                        = file.displayName
+                    li                        
+                        a(href='/list/' + dirPaths.slice(0, i + 1).join('/'))= '/' + pathComponent
+
+        each file, x in dirContents
+            if ((x % 4 == 0))
+                .row
+                    each file, y in dirContents.slice(x, x + 4)
+                        .col-md-4
+                            if file.isDirectory
+                                span.glyphicon.glyphicon-folder-open &nbsp;
+                                a(href='/list/' + file.filePath).directory
+                                    = file.displayName
+                            else
+                                span.glyphicon.glyphicon-play &nbsp;
+                                a(href='/send/' + file.filePath).file
+                                    = file.displayName
+    script(src='/components/bootstrap/dist/js/bootstrap.min.js')
