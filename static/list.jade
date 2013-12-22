@@ -15,13 +15,13 @@ body
                     li.active= pathComponent
                 else
                     li                        
-                        a(href='/list/' + dirPaths.slice(0, i + 1).join('/'))= '/' + pathComponent
+                        a(href='/list//' + dirPaths.slice(0, i + 1).join('/'))= pathComponent
 
         each file, x in dirContents
             if ((x % 4 == 0))
                 .row
                     each file, y in dirContents.slice(x, x + 4)
-                        .col-md-4
+                        .col-md-3
                             if file.isDirectory
                                 span.glyphicon.glyphicon-folder-open &nbsp;
                                 a(href='/list/' + file.filePath).directory
@@ -30,4 +30,8 @@ body
                                 span.glyphicon.glyphicon-play &nbsp;
                                 a(href='/send/' + file.filePath).file
                                     = file.displayName
+                                if file.mediaType === 'tv'
+                                    div(style='padding-left: 30px; padding-top: -10px')
+                                        h4
+                                            small Ep. xx/xx
     script(src='/components/bootstrap/dist/js/bootstrap.min.js')
