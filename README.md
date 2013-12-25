@@ -44,9 +44,8 @@ var appId = 'Your app ID here';
 ```
 
 ## Todo
-* A responsive sender UI that will show all the files to serve as well as a list of Chromecasts to serve.
+* ~~A responsive sender UI that will show all the files to serve~~ as well as a list of Chromecasts to serve.
 * Interface for pausing/playing/setting the volume of the Chromecast
-* UI on the Chromecast
 * Better documentation
 * Testing
 * Playlist functionality
