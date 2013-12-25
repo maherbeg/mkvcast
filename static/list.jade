@@ -10,7 +10,7 @@ body
             h1 mkvcast
             p#nowplaying= nowPlaying
             p
-                small#curtime
+                small#curTime
     .container
         ol.breadcrumb
             li
@@ -22,6 +22,12 @@ body
                     else
                         li                        
                             a(href='/list//' + dirPaths.slice(0, i + 1).join('/'))= pathComponent
+        .row
+            .col-xs-4
+                .input-group
+                    .input-group-addon Start At
+                    input(type='text' placeholder='HH:MM:SS').form-control#startTime
+        .row &nbsp;
 
         each file, x in dirContents
             if ((x % 4 == 0))
@@ -42,6 +48,7 @@ body
                                         if file.mediaType === 'tv'
                                             h4 
                                                 small Ep. xx/xx
+
     script(src='/components/jquery/jquery.min.js')
     script(src='/components/bootstrap/dist/js/bootstrap.min.js')
     script.
@@ -61,8 +68,13 @@ body
         };
         
         ws.onmessage = function(event) {
-            console.log(event);
-            console.log(event.data);
             var message = JSON.parse(event.data);
-            document.getElementById('curtime').innerText = convertSecondsToTime(message.currentTime);
+            document.getElementById('curTime').innerText = convertSecondsToTime(message.currentTimeSeconds + message.startTimeSeconds);
         };
+        
+        $('a').click(function() {
+            var startTime = $('#startTime').val();
+            if (!startTime) { return; }
+            if (startTime.split(':').length !== 3) { return; }
+            $(this).attr('href', $(this).attr('href') + '?startTime=' + startTime);
+        });
