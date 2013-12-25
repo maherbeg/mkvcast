@@ -8,7 +8,9 @@ body
     .jumbotron
         .container
             h1 mkvcast
-            p= nowPlaying
+            p#nowplaying= nowPlaying
+            p
+                small#curtime
     .container
         ol.breadcrumb
             li
@@ -42,3 +44,25 @@ body
                                                 small Ep. xx/xx
     script(src='/components/jquery/jquery.min.js')
     script(src='/components/bootstrap/dist/js/bootstrap.min.js')
+    script.
+        var formatTimeComponent = function(timeComponent) { 
+            return ('0' + (timeComponent | 0) % 60).slice(-2);
+        };
+        
+        var convertSecondsToTime = function(seconds) { 
+            return seconds
+                ? formatTimeComponent(seconds / 3600) + ':' + formatTimeComponent(seconds / 60) + ':' + formatTimeComponent(seconds % 60)
+                : ''
+        };
+
+        var ws = new WebSocket('ws://' + window.location.host);
+        ws.onerror = function(event) {
+            console.log('ERROR! <%s>', event);
+        };
+        
+        ws.onmessage = function(event) {
+            console.log(event);
+            console.log(event.data);
+            var message = JSON.parse(event.data);
+            document.getElementById('curtime').innerText = convertSecondsToTime(message.currentTime);
+        };

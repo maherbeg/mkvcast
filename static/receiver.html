@@ -19,29 +19,43 @@
     <script src="//www.gstatic.com/cast/js/receiver/1.0/cast_receiver.js"></script>
     <script src="mkvcast.config.js"></script>
     
-    <script>
-    var receiver = new cast.receiver.Receiver(appId, ['mkvcast']);
-    var channelHandler = new cast.receiver.ChannelHandler('mkvcast');
-    
-    channelHandler.addChannelFactory(receiver.createChannelFactory('mkvcast'));
-    
-    receiver.start();
-    
-    channelHandler.addEventListener(cast.receiver.Channel.EventType.MESSAGE, onMessage.bind(this));
-            
-    function onMessage(event) {
-        console.log('event found!');
-
+    <script type="text/javascript">
         var video = document.createElement('video');
-        video['autoplay'] = 'autoplay';
-        // TODO build app controls
-        video['controls'] = 'controls';
+    
+        var receiver = new cast.receiver.Receiver(appId, ['mkvcast']);
+        var channelHandler = new cast.receiver.ChannelHandler('mkvcast');
+    
+        channelHandler.addChannelFactory(receiver.createChannelFactory('mkvcast'));
+    
+        receiver.start();
+    
+        channelHandler.addEventListener(cast.receiver.Channel.EventType.MESSAGE, onMessage.bind(this));
+            
+        function onMessage(event) {
+            console.log('event found!');
+
+            video['autoplay'] = 'autoplay';
+            // TODO build app controls
+            video['controls'] = 'controls';
         
-        video['src'] = event.message.mediaUrl;
+            video['src'] = event.message.mediaUrl;
         
-        document.body.appendChild(video);
-        video.webkitRequestFullScreen();
-    }
+            document.body.appendChild(video);
+            video.webkitRequestFullScreen();
+    
+            var playbackInfoSocket = new WebSocket('ws://' + event.message.mediaUrl.replace(/^http:\/\//, ''));
+            playbackInfoSocket.onerror = function(event) {
+                console.log('websocket error: ' + JSON.stringify(event));
+            };
+    
+            playbackInfoSocket.onopen = function(event) {
+                video.addEventListener('timeupdate', function() {
+                    playbackInfoSocket.send(JSON.stringify({
+                        currentTime : video.currentTime
+                    }));
+                });
+            };
+        }
     </script>
 </body>
 </html>
