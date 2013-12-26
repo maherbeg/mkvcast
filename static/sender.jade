@@ -21,6 +21,7 @@ body
         
         var sendUrl = function(activity) {
             cast_api.sendMessage(activity.activityId, 'mkvcast', { mediaUrl : '#{mediaUrl}' });
+            window.location.replace('http://' + window.location.host + '/list');
         };
 
         window.addEventListener('message', function(event) {
