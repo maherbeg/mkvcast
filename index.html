@@ -45,7 +45,7 @@
 
 <p>Upload the static/receiver.html file to the URL endpoint you specified when you had your Chromecast whitelisted.</p>
 
-<p>_Note:_Ideally the Chromecast team will have a basic video player available for everyone to use. Until then, you'll need to host and whitelist your own.</p>
+<p><em>Note:</em>Ideally the Chromecast team will have a basic video player available for everyone to use. Until then, you'll need to host and whitelist your own.</p>
 
 <h3>
 <a name="mac-os-x" class="anchor" href="#mac-os-x"><span class="octicon octicon-link"></span></a>Mac OS X</h3>
@@ -58,18 +58,44 @@ brew install node
 git clone https://github.com/maherbeg/mkvcast.git
 <span class="nb">cd </span>mkvcast
 npm install
-node ./lib/mkvcast &lt;appId&gt; &lt;filename&gt;
-open <span class="s1">'http://localhost:1338/sender'</span>
+npm install -g bower
+bower install
+node ./lib/mkvcast &lt;config file&gt;
+open <span class="s1">'http://localhost:1338/list'</span>
+</pre></div>
+
+<h2>
+<a name="configuration" class="anchor" href="#configuration"><span class="octicon octicon-link"></span></a>Configuration</h2>
+
+<h3>
+<a name="configjson" class="anchor" href="#configjson"><span class="octicon octicon-link"></span></a>config.json</h3>
+
+<p>The following keys need to be saved in a 'config.json' that is passed into the application.</p>
+
+<div class="highlight highlight-json"><pre><span class="p">{</span>
+    <span class="nt">"applicationId"</span> <span class="p">:</span> <span class="s2">"Your app ID here"</span><span class="p">,</span>
+    <span class="nt">"mediaDirectories"</span> <span class="p">:</span> <span class="p">[</span>
+        <span class="s2">"/Users/someuser/Downloads/"</span><span class="p">,</span>
+        <span class="s2">"/Volumes/harddrive/Media/"</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+<h3>
+<a name="mkvcastconfigjs" class="anchor" href="#mkvcastconfigjs"><span class="octicon octicon-link"></span></a>mkvcast.config.js</h3>
+
+<p>Place a javascript file in the same directory as where your receiver.html file lives.</p>
+
+<div class="highlight highlight-javascript"><pre><span class="kd">var</span> <span class="nx">appId</span> <span class="o">=</span> <span class="s1">'Your app ID here'</span><span class="p">;</span>
 </pre></div>
 
 <h2>
 <a name="todo" class="anchor" href="#todo"><span class="octicon octicon-link"></span></a>Todo</h2>
 
 <ul>
-<li>Serve more than just a passed in file. There should be a config.json file that contains directory paths to serve.</li>
-<li>A responsive sender UI that will show all the files to serve as well as a list of Chromecasts to serve.</li>
+<li>
+<del>A responsive sender UI that will show all the files to serve</del> as well as a list of Chromecasts to serve.</li>
 <li>Interface for pausing/playing/setting the volume of the Chromecast</li>
-<li>UI on the Chromecast</li>
 <li>Better documentation</li>
 <li>Testing</li>
 <li>Playlist functionality</li>
