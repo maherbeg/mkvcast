@@ -3,7 +3,7 @@ html
     head
         meta(name='viewport' content='width=device-width, initial-scale=1.0')
         title mkvcast
-        link(rel='stylesheet' href='/components/bootstrap/dist/css/bootstrap.min.css')
+        link(rel='stylesheet' href='/static/components/bootstrap/dist/css/bootstrap.min.css')
 body
     .jumbotron
         .container
@@ -49,8 +49,7 @@ body
                                             h4 
                                                 small Ep. xx/xx
 
-    script(src='/components/jquery/jquery.min.js')
-    script(src='/components/bootstrap/dist/js/bootstrap.min.js')
+    script(src='/static/components/jQuery/jquery.min.js')
     script.
         var formatTimeComponent = function(timeComponent) { 
             return ('0' + (timeComponent | 0) % 60).slice(-2);
