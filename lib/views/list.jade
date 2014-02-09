@@ -49,7 +49,6 @@ body
                                             h4 
                                                 small Ep. xx/xx
 
-    script(src='/static/components/jQuery/jquery.min.js')
     script.
         var formatTimeComponent = function(timeComponent) { 
             return ('0' + (timeComponent | 0) % 60).slice(-2);
@@ -71,9 +70,18 @@ body
             document.getElementById('curTime').innerText = convertSecondsToTime(message.currentTimeSeconds + message.startTimeSeconds);
         };
         
-        $('a').click(function() {
-            var startTime = $('#startTime').val();
+        var startTimeElement = document.getElementById('startTime');
+        
+        var startTimeClickHandler = function() {
+            var startTime = startTimeElement.value;
             if (!startTime) { return; }
             if (startTime.split(':').length !== 3) { return; }
-            $(this).attr('href', $(this).attr('href') + '?startTime=' + startTime);
+            
+            this.href = this.href + '?startTime=' + startTime;
+        };
+        
+        var allLinks = document.getElementsByTagName('a');
+        
+        Array.prototype.forEach.call(allLinks, function(val, index) {
+            val.addEventListener('click', startTimeClickHandler);
         });
