@@ -27,6 +27,7 @@ The following keys need to be saved in a 'config.json' that is passed into the a
         "/Volumes/harddrive/Media/"
     ]
 }
+```
 
 ## Todo
 * ~~A responsive sender UI that will show all the files to serve~~ as well as a list of Chromecasts to serve.
