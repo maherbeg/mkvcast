@@ -1,34 +1,34 @@
 !!!
-html(data-cast-api-enabled="true")
+html
+head
+  script(type="text/javascript", src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js")
 body
     script.
-        var cast_api;
-    
-        var initializeApi = function() {
-            if (!cast_api) {
-                cast_api = new cast.Api();
-                cast_api.addReceiverListener('#{appId}', onReceiverList);
-            }
-        };
-    
-        var onReceiverList = function(list) {
-            if (!list.length) { return; }
-            // TODO Currently we're only supporting one chromecast at a time
-            var receiver = list[0];
-            var request = new cast.LaunchRequest('#{appId}', receiver);
-            cast_api.launch(request, sendUrl);
-        };
-        
-        var sendUrl = function(activity) {
-            cast_api.sendMessage(activity.activityId, 'mkvcast', { mediaUrl : '#{mediaUrl}' });
-            window.location.replace('http://' + window.location.host + '/list');
+        var noop = function() {};
+
+        var loadMedia = function(session) {
+          var mediaInfo = new chrome.cast.media.MediaInfo('#{mediaUrl}', 'video/mkv');
+          var request = new chrome.cast.media.LoadRequest(mediaInfo);
+          request.autoPlay = true;
+
+          request.currentTime = 0;
+
+          session.loadMedia(request);
+
+          window.location.replace('http://' + window.location.host + '/list');
         };
 
-        window.addEventListener('message', function(event) {
-            if (event.source === window && event.data &&
-                    event.data.source === 'CastApi' &&
-                    event.data.event === 'Hello') {
-                initializeApi();
-           
-            }
-        });
+        var initializePlayer = function() {
+          if (!chrome.cast || !chrome.cast.isAvailable) {
+            setTimeout(this.initializePlayer.bind(this), 1000);
+            return;
+          }
+
+          var sessionRequest = new chrome.cast.SessionRequest(chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID);
+
+          var apiConfig = new chrome.cast.ApiConfig(sessionRequest, loadMedia, noop);
+
+          chrome.cast.initialize(apiConfig, function() { chrome.cast.requestSession(loadMedia); }, noop);
+        }
+
+        initializePlayer();
