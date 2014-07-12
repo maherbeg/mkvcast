@@ -23,6 +23,10 @@ var onMediaUpdate = function(mediaSession) {
     streamingPath = streamingPath.slice(streamStringStartIndex + streamStringStart.length + 1);
   }
 
+  if (!mediaSession.getEstimatedTime()) {
+      streamingPath = 'Not currently playing anything.';
+  }
+
   document.getElementById('now-playing').innerText = streamingPath;
 };
 
