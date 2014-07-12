@@ -4,23 +4,25 @@ html
         meta(name='viewport' content='width=device-width, initial-scale=1.0')
         title mkvcast
         link(rel='stylesheet' href='/static/components/bootstrap/dist/css/bootstrap.min.css')
+        script(type='text/javascript', src='https://www.gstatic.com/cv/js/sender/v1/cast_sender.js')
+        script(type='text/javascript', src='/static/js/chromecast.js')
 body
     .jumbotron
         .container
             h1 mkvcast
-            p#nowplaying= nowPlaying
+            p#now-playing
             p
-                small#curTime
+                small#cur-time
     .container
         ol.breadcrumb
             li
                 a(href='/list') Media Directories
-            if !!dirPaths            
+            if !!dirPaths
                 each pathComponent, i in dirPaths
                     if i == dirPaths.length - 1
                         li.active= pathComponent
                     else
-                        li                        
+                        li
                             a(href='/list//' + dirPaths.slice(0, i + 1).join('/'))= pathComponent
         .row
             .col-xs-4
@@ -46,42 +48,57 @@ body
                                     .media-body
                                         a(href='/send/' + file.filePath).file= file.displayName
                                         if file.mediaType === 'tv'
-                                            h4 
+                                            h4
                                                 small Ep. xx/xx
 
     script.
-        var formatTimeComponent = function(timeComponent) { 
+        var formatTimeComponent = function(timeComponent) {
             return ('0' + (timeComponent | 0) % 60).slice(-2);
         };
-        
-        var convertSecondsToTime = function(seconds) { 
+
+        var convertSecondsToTime = function(seconds) {
             return seconds
                 ? formatTimeComponent(seconds / 3600) + ':' + formatTimeComponent(seconds / 60) + ':' + formatTimeComponent(seconds % 60)
                 : ''
         };
 
-        var ws = new WebSocket('ws://' + window.location.host);
-        ws.onerror = function(event) {
-            console.log('ERROR! <%s>', event);
-        };
-        
-        ws.onmessage = function(event) {
-            var message = JSON.parse(event.data);
-            document.getElementById('curTime').innerText = convertSecondsToTime(message.currentTimeSeconds + message.startTimeSeconds);
-        };
-        
-        var startTimeElement = document.getElementById('startTime');
-        
         var startTimeClickHandler = function() {
-            var startTime = startTimeElement.value;
+            var startTime = document.getElementById('startTime').value;
             if (!startTime) { return; }
             if (startTime.split(':').length !== 3) { return; }
-            
+
             this.href = this.href + '?startTime=' + startTime;
         };
-        
+
+        // TODO include start time
+        var mediaUpdate = function(mediaSession) {
+          document.getElementById('cur-time').innerText = convertSecondsToTime(mediaSession.getEstimatedTime());
+
+          var streamingPath = mediaSession.media.contentId;
+          var streamStringStart = '/stream/';
+          var streamStringStartIndex = streamingPath.indexOf(streamStringStart);
+          if (streamStringStartIndex !== -1) {
+            streamingPath = streamingPath.slice(streamStringStartIndex + streamStringStart.length + 1);
+          }
+
+          document.getElementById('now-playing').innerText = streamingPath;
+        };
+
+        var onSessionJoined = function(joinedSession) {
+          if (!joinedSession) {
+            return;
+          }
+
+          if (!joinedSession.media) { return; }
+
+          var mediaSession = joinedSession.media[0];
+          setInterval(mediaUpdate.bind(null, mediaSession), 1000);
+        };
+
+        initializePlayer(onSessionJoined);
+
         var allLinks = document.getElementsByTagName('a');
-        
+
         Array.prototype.forEach.call(allLinks, function(val, index) {
             val.addEventListener('click', startTimeClickHandler);
         });

@@ -15,7 +15,17 @@ body
 
           session.loadMedia(request);
 
-          window.location.replace('http://' + window.location.host + '/list');
+
+          var curPath = window.location.pathname;
+          var lastSlashIndex = curPath.lastIndexOf('/');
+          if (lastSlashIndex !== -1) {
+            curPath = curPath.slice('/send'.length, lastSlashIndex)                        ;
+          }
+          else {
+            curPath = '';
+          }
+
+          window.location.replace('http://' + window.location.host + '/list' + curPath);
         };
 
         var initializePlayer = function() {
@@ -29,6 +39,6 @@ body
           var apiConfig = new chrome.cast.ApiConfig(sessionRequest, loadMedia, noop);
 
           chrome.cast.initialize(apiConfig, function() { chrome.cast.requestSession(loadMedia); }, noop);
-        }
+        };
 
         initializePlayer();
