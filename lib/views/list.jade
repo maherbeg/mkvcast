@@ -70,35 +70,4 @@ body
             this.href = this.href + '?startTime=' + startTime;
         };
 
-        // TODO include start time
-        var mediaUpdate = function(mediaSession) {
-          document.getElementById('cur-time').innerText = convertSecondsToTime(mediaSession.getEstimatedTime());
-
-          var streamingPath = mediaSession.media.contentId;
-          var streamStringStart = '/stream/';
-          var streamStringStartIndex = streamingPath.indexOf(streamStringStart);
-          if (streamStringStartIndex !== -1) {
-            streamingPath = streamingPath.slice(streamStringStartIndex + streamStringStart.length + 1);
-          }
-
-          document.getElementById('now-playing').innerText = streamingPath;
-        };
-
-        var onSessionJoined = function(joinedSession) {
-          if (!joinedSession) {
-            return;
-          }
-
-          if (!joinedSession.media) { return; }
-
-          var mediaSession = joinedSession.media[0];
-          setInterval(mediaUpdate.bind(null, mediaSession), 1000);
-        };
-
         initializePlayer(onSessionJoined);
-
-        var allLinks = document.getElementsByTagName('a');
-
-        Array.prototype.forEach.call(allLinks, function(val, index) {
-            val.addEventListener('click', startTimeClickHandler);
-        });
