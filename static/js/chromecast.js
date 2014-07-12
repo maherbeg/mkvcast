@@ -1,10 +1,7 @@
 var noop = function() {};
 
 var loadMedia = function(session, event) {
-  var streamingFile = event.target.href;
-  streamingFile = streamingFile.replace('send', 'stream');
-
-  var mediaInfo = new chrome.cast.media.MediaInfo(streamingFile, 'video/mkv');
+  var mediaInfo = new chrome.cast.media.MediaInfo(event.target.href, 'video/mkv');
   var request = new chrome.cast.media.LoadRequest(mediaInfo);
   request.autoPlay = true;
 

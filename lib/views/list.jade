@@ -48,7 +48,7 @@ body
                                     .pull-left
                                         span.glyphicon.glyphicon-play &nbsp;
                                     .media-body
-                                        a(href='/send/' + file.filePath).file= file.displayName
+                                        a(href='/stream/' + file.filePath).file= file.displayName
                                         if file.mediaType === 'tv'
                                             h4
                                                 small Ep. xx/xx
