@@ -30,26 +30,27 @@ var onMediaUpdate = function(mediaSession) {
   document.getElementById('now-playing').innerText = streamingPath;
 };
 
-var addStreamStartHandlers = function(session) {
-  var loadMediaForSession = loadMedia.bind(null, session);
-  var allLinks = document.querySelectorAll('a.file');
+var addClickHandlerForQuerySelector = function(session, querySelector) {
+    var loadMediaForSession = loadMedia.bind(null, session);
+    var allLinks = document.querySelectorAll(querySelector);
 
-  Array.prototype.forEach.call(allLinks, function(val, index) {
-      val.addEventListener('click', loadMediaForSession);
-  });
+    Array.prototype.forEach.call(allLinks, function(val, index) {
+        val.addEventListener('click', loadMediaForSession);
+    });
 };
 
 var onSessionJoined = function(joinedSession) {
-  if (!joinedSession) {
-    return;
-  }
+    if (!joinedSession) {
+        return;
+    }
 
-  addStreamStartHandlers(joinedSession);
+    addClickHandlerForQuerySelector(joinedSession, 'a.channel');
+    addClickHandlerForQuerySelector(joinedSession, 'a.file');
 
-  if (!joinedSession.media || !joinedSession.media[0]) { return; }
+    if (!joinedSession.media || !joinedSession.media[0]) { return; }
 
-  var mediaSession = joinedSession.media[0];
-  setInterval(onMediaUpdate.bind(null, mediaSession), 1000);
+    var mediaSession = joinedSession.media[0];
+    setInterval(onMediaUpdate.bind(null, mediaSession), 1000);
 };
 
 var initializePlayer = function(onSessionJoined) {

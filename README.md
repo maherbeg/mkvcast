@@ -19,13 +19,33 @@ open 'http://localhost:1338/list'
 
 ## Configuration
 ### config.json
-The following keys need to be saved in a 'config.json' that is passed into the application.
+The following keys need to be saved in a `config.json` that is passed into the application.
+
 ```json
 {
     "mediaDirectories" : [
         "/Users/someuser/Downloads/",
         "/Volumes/harddrive/Media/"
     ]
+}
+```
+
+#### channels
+A channel is a set of directories to randomly view videos from. Think of it as a shuffled
+playlist based on your content. You can create channels for genres, directors etc.
+
+Just simply add another configuration option to your `config.json` file called `channels`.
+The key is the channel name with an entry of directories specifying the directories you would
+like to view.
+
+***Note*** It is not traversing nested directories yet.
+```json
+{
+    "channels" : {
+        "new" : {
+            "directories" : ["/Users/someuser/Downloads", "/Volumes/harddrive/Media/NotWatched"]
+        }
+    }
 }
 ```
 

@@ -33,6 +33,19 @@ body
                     input(type='text' placeholder='HH:MM:SS').form-control#startTime
         .row &nbsp;
 
+        each channel, x in channels
+            if ((x % 4 == 0))
+                .row
+                    each channel, y in channels.slice(x, x + 4)
+                        .col-xs-6.col-md-3
+                            .media
+                                .pull-left
+                                    span.glyphicon.glyphicon-play &nbsp;
+                                .media-body
+                                    a(href='/channels/' + channel).channel= channel
+
+        .row &nbsp;
+
         each file, x in dirContents
             if ((x % 4 == 0))
                 .row
