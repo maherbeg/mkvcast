@@ -1,28 +1,28 @@
 {
   "name": "mkvcast",
-  "version": "0.4.0",
+  "version": "0.6.0",
   "dependencies": {
-      "express" : "*",
-      "ip" : "*",
-      "jade" : "*",
-      "koa" : "*"
+      "express": "*",
+      "ip": "*",
+      "jade": "*",
+      "koa": "*"
   },
-  "bin" : {
-      "mkvcast" : "./bin/mkvcast"
+  "bin": {
+      "mkvcast": "./bin/mkvcast"
   },
-  "main" : "./lib/mkvcast",
-  "respository" : {
-      "type" : "git",
-      "url" : "https://github.com/maherbeg/mkvcast.git"
+  "main": "./lib/mkvcast",
+  "respository": {
+      "type": "git",
+      "url": "https://github.com/maherbeg/mkvcast.git"
   },
-  "keywords" : [
+  "keywords": [
       "mkv",
       "mp4",
       "transcode",
       "chromecast"
   ],
-  "license" : "MIT",
-  "engines" : {
+  "license": "MIT",
+  "engines": {
       "node": ">=0.10"
   }
 }

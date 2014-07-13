@@ -31,6 +31,8 @@ body
                 .input-group
                     .input-group-addon Start At
                     input(type='text' placeholder='HH:MM:SS').form-control#startTime
+            .col-xs-4
+                a(href='/channels').file Up Next
         .row &nbsp;
 
         each channel, x in channels
@@ -62,6 +64,8 @@ body
                                         span.glyphicon.glyphicon-play &nbsp;
                                     .media-body
                                         a(href='/stream/' + file.filePath).file= file.displayName
+                                        form(action='/channels/' + file.filePath, method='post')
+                                            input(type='submit', value='submit')
                                         if file.mediaType === 'tv'
                                             h4
                                                 small Ep. xx/xx
