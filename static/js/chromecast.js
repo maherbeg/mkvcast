@@ -1,33 +1,52 @@
 var noop = function() {};
 
+var mediaUpdateIntervalId;
+
+var extractMediaFileNameFromPath = function(streamingPath) {
+    var streamStringStartIndex = streamingPath.lastIndexOf('/');
+    if (streamStringStartIndex !== -1) {
+        streamingPath = streamingPath.slice(streamStringStartIndex + 1);
+    }
+
+    return streamingPath;
+};
+
 var loadMedia = function(session, event) {
-  var mediaInfo = new chrome.cast.media.MediaInfo(event.target.href, 'video/mkv');
-  var request = new chrome.cast.media.LoadRequest(mediaInfo);
-  request.autoPlay = true;
+    clearInterval(mediaIntervalUpdateId);
+    var mediaInfo = new chrome.cast.media.MediaInfo(event.target.href, 'video/mkv');
+    var request = new chrome.cast.media.LoadRequest(mediaInfo);
+    request.autoPlay = true;
 
-  request.currentTime = 0;
+    request.currentTime = 0;
 
-  session.loadMedia(request, noop, noop);
+    session.loadMedia(request, noop, noop);
 
-  event.preventDefault();
+    document.getElementById('cur-time').innerText = '';
+    document.getElementById('now-playing').innerText = 'Loading ' + extractMediaFileNameFromPath(event.target.href);
+    mediaIntervalUpdateId = setInterval(onMediaUpdate.bind(null, session), 1000);
+
+    event.preventDefault();
 };
 
 // TODO include start time
-var onMediaUpdate = function(mediaSession) {
-  document.getElementById('cur-time').innerText = convertSecondsToTime(mediaSession.getEstimatedTime());
+var onMediaUpdate = function(joinedSession) {
+    if (!joinedSession.media || !joinedSession.media[0]) {
+        console.log('hello?');
+        return;
+    }
 
-  var streamingPath = mediaSession.media.contentId;
-  var streamStringStart = '/stream/';
-  var streamStringStartIndex = streamingPath.indexOf(streamStringStart);
-  if (streamStringStartIndex !== -1) {
-    streamingPath = streamingPath.slice(streamStringStartIndex + streamStringStart.length + 1);
-  }
+    var mediaSession = joinedSession.media[0];
+    var estimatedTime = mediaSession.getEstimatedTime();
 
-  if (!mediaSession.getEstimatedTime()) {
-      streamingPath = 'Not currently playing anything.';
-  }
+    document.getElementById('cur-time').innerText = convertSecondsToTime(estimatedTime);
 
-  document.getElementById('now-playing').innerText = streamingPath;
+    var streamingPath = extractMediaFileNameFromPath(mediaSession.media.contentId);
+
+    if (!estimatedTime) {
+        streamingPath = 'Not currently playing anything.';
+    }
+
+    document.getElementById('now-playing').innerText = streamingPath;
 };
 
 var addClickHandlerForQuerySelector = function(session, querySelector) {
@@ -47,10 +66,7 @@ var onSessionJoined = function(joinedSession) {
     addClickHandlerForQuerySelector(joinedSession, 'a.channel');
     addClickHandlerForQuerySelector(joinedSession, 'a.file');
 
-    if (!joinedSession.media || !joinedSession.media[0]) { return; }
-
-    var mediaSession = joinedSession.media[0];
-    setInterval(onMediaUpdate.bind(null, mediaSession), 1000);
+    mediaIntervalUpdateId = setInterval(onMediaUpdate.bind(null, joinedSession), 1000);
 };
 
 var initializePlayer = function(onSessionJoined) {
