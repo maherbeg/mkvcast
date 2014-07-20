@@ -3,8 +3,6 @@ var noop = function() {};
 var mediaUpdateIntervalId;
 
 var extractMediaFileNameFromPath = function(streamingPath) {
-    if (!streamingPath) { return ''; }
-
     var streamStringStartIndex = streamingPath.lastIndexOf('/');
     if (streamStringStartIndex !== -1) {
         streamingPath = streamingPath.slice(streamStringStartIndex + 1);
@@ -15,7 +13,10 @@ var extractMediaFileNameFromPath = function(streamingPath) {
 
 var loadMedia = function(e, session) {
     clearInterval(mediaUpdateIntervalId);
-    var mediaInfo = new chrome.cast.media.MediaInfo(e.target.href, 'video/mkv');
+
+    var mediaPath = e.target.href;
+
+    var mediaInfo = new chrome.cast.media.MediaInfo(mediaPath, 'video/mkv');
     var request = new chrome.cast.media.LoadRequest(mediaInfo);
     request.autoPlay = true;
 
@@ -23,9 +24,16 @@ var loadMedia = function(e, session) {
 
     session.loadMedia(request, noop, noop);
 
+    var mediaName = extractMediaFileNameFromPath(mediaPath);
+
     document.getElementById('cur-time').innerText = '';
-    document.getElementById('now-playing').innerText = 'Loading ' + extractMediaFileNameFromPath(event.target.href);
+    document.getElementById('now-playing').innerText = 'Loading ' + mediaName;
     mediaUpdateIntervalId = setInterval(onMediaUpdate.bind(null, session), 1000);
+
+    var currentLocation = window.location;
+    var currentTitle = window.title;
+    window.history.pushState(null, mediaName, mediaPath);
+    window.history.replaceState(null, currentTitle, currentLocation);
 };
 
 // TODO include start time
