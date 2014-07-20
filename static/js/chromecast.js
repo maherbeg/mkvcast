@@ -11,7 +11,7 @@ var extractMediaFileNameFromPath = function(streamingPath) {
     return streamingPath;
 };
 
-var loadMedia = function(session, event) {
+var loadMedia = function(event, session) {
     clearInterval(mediaIntervalUpdateId);
     var mediaInfo = new chrome.cast.media.MediaInfo(event.target.href, 'video/mkv');
     var request = new chrome.cast.media.LoadRequest(mediaInfo);
@@ -31,16 +31,21 @@ var loadMedia = function(session, event) {
 // TODO include start time
 var onMediaUpdate = function(joinedSession) {
     if (!joinedSession.media || !joinedSession.media[0]) {
-        console.log('hello?');
         return;
     }
 
     var mediaSession = joinedSession.media[0];
+    console.log(mediaSession);
+    if (mediaSession.playerState === chrome.cast.media.PlayerState.IDLE &&
+        mediaSession.idleReason !== null) {
+        console.log('Media has finished!', mediaSession.idleReason);
+    }
+
     var estimatedTime = mediaSession.getEstimatedTime();
 
     document.getElementById('cur-time').innerText = convertSecondsToTime(estimatedTime);
 
-    var streamingPath = extractMediaFileNameFromPath(mediaSession.media.contentId);
+    var streamingPath = 'Playing ' + extractMediaFileNameFromPath(mediaSession.media.contentId);
 
     if (!estimatedTime) {
         streamingPath = 'Not currently playing anything.';
@@ -49,23 +54,21 @@ var onMediaUpdate = function(joinedSession) {
     document.getElementById('now-playing').innerText = streamingPath;
 };
 
-var addClickHandlerForQuerySelector = function(session, querySelector) {
-    var loadMediaForSession = loadMedia.bind(null, session);
+var addClickHandlerForQuerySelector = function(session, querySelector) {;
     var allLinks = document.querySelectorAll(querySelector);
 
     Array.prototype.forEach.call(allLinks, function(val, index) {
-        val.addEventListener('click', loadMediaForSession);
+        val.addEventListener('click', requestSessionAndLoadMedia);
     });
 };
 
+var requestSessionAndLoadMedia = function(event) {
+    chrome.cast.requestSession(loadMedia.bind(null, event), noop);
+
+    event.preventDefault();
+};
+
 var onSessionJoined = function(joinedSession) {
-    if (!joinedSession) {
-        return;
-    }
-
-    addClickHandlerForQuerySelector(joinedSession, 'a.channel');
-    addClickHandlerForQuerySelector(joinedSession, 'a.file');
-
     mediaIntervalUpdateId = setInterval(onMediaUpdate.bind(null, joinedSession), 1000);
 };
 
@@ -79,5 +82,8 @@ var initializePlayer = function(onSessionJoined) {
 
     var apiConfig = new chrome.cast.ApiConfig(sessionRequest, onSessionJoined, noop, chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED);
 
-    chrome.cast.initialize(apiConfig, chrome.cast.requestSession.bind(null, noop, noop), noop);
+    chrome.cast.initialize(apiConfig, noop, noop);
+
+    addClickHandlerForQuerySelector(joinedSession, 'a.channel');
+    addClickHandlerForQuerySelector(joinedSession, 'a.file');
 };
