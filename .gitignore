@@ -1,3 +1,4 @@
 config.json
 mkvcast.config.js
 static/components
+node_modules
