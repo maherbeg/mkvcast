@@ -17,6 +17,22 @@ node ./lib/mkvcast <config file>
 open 'http://localhost:1338/list'
 ```
 
+### FreeBsd
+You should install everything from a [FreeBSD Jail](www.freebsd.org/doc/handbook/jails-build.html)
+```bash
+pkg install ffmpeg
+pkg install node
+pkg install npm
+pkg install git
+git clone https://github.com/maherbeg/mkvcast.git
+cd mkvcast
+npm install
+npm install -g bower
+bower install
+node ./lib/mkvcast <config file>
+open 'http://localhost:1338/list'
+```
+
 ## Configuration
 ### config.json
 The following keys need to be saved in a `config.json` that is passed into the application.
