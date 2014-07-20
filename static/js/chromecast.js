@@ -71,11 +71,8 @@ var onSessionJoined = function(joinedSession) {
     mediaUpdateIntervalId = setInterval(onMediaUpdate.bind(null, joinedSession), 1000);
 };
 
-var initializePlayer = function(onSessionJoined) {
-    if (!chrome.cast || !chrome.cast.isAvailable) {
-        setTimeout(initializePlayer.bind(null, onSessionJoined), 1000);
-        return;
-    }
+window['__onGCastApiAvailable'] = function(loaded, errorInfo) {
+    if (!loaded) { return console.log(errorInfo); }
 
     var sessionRequest = new chrome.cast.SessionRequest(chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID);
 
