@@ -1,8 +1,11 @@
 var noop = function() {};
 
+var currentSession;
 var mediaUpdateIntervalId;
 
 var extractMediaFileNameFromPath = function(streamingPath) {
+    if (!streamingPath) { return; }
+
     var streamStringStartIndex = streamingPath.lastIndexOf('/');
     if (streamStringStartIndex !== -1) {
         streamingPath = streamingPath.slice(streamStringStartIndex + 1);
@@ -30,9 +33,9 @@ var loadMedia = function(target, session) {
     document.getElementById('now-playing').innerText = 'Loading ' + mediaName;
     mediaUpdateIntervalId = setInterval(onMediaUpdate.bind(null, session), 1000);
 
-    var currentLocation = window.location;
+    var currentLocation = window.location.href;
     var currentTitle = window.title;
-    window.history.pushState(null, mediaName, mediaPath);
+    window.history.replaceState(null, mediaName, mediaPath);
     window.history.replaceState(null, currentTitle, currentLocation);
 };
 
@@ -63,21 +66,34 @@ var onMediaUpdate = function(joinedSession) {
 };
 
 var streamingMediaHandler = function(e) {
-    var target = e.target.parentElement;
+    var target = e.target;
 
-    if (!target || target.tagName.toUpperCase() !== 'A') { return; }
+    if (!target || target.tagName.toUpperCase() !== 'A') {
+        target = target.parentElement;
+
+        if (!target || target.tagName.toUpperCase() !== 'A') {
+            return;
+        }
+    }
 
     if (target.href.indexOf('/stream/') === -1) { return; }
 
-    chrome.cast.requestSession(loadMedia.bind(null, target), noop);
+    if (currentSession) {
+        loadMedia(target, currentSession);
+    } else {
+        chrome.cast.requestSession(loadMedia.bind(null, target), noop);
+    }
 
     e.preventDefault();
 };
 
 
 var onSessionJoined = function(joinedSession) {
+    currentSession = joinedSession
     mediaUpdateIntervalId = setInterval(onMediaUpdate.bind(null, joinedSession), 1000);
 };
+
+document.addEventListener('click', noop);
 
 window['__onGCastApiAvailable'] = function(loaded, errorInfo) {
     if (!loaded) { return console.log(errorInfo); }
@@ -88,5 +104,6 @@ window['__onGCastApiAvailable'] = function(loaded, errorInfo) {
 
     chrome.cast.initialize(apiConfig, noop, noop);
 
+    document.removeEventListener('click', noop);
     document.addEventListener('click', streamingMediaHandler, false);
 };
