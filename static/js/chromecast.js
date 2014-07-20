@@ -11,10 +11,10 @@ var extractMediaFileNameFromPath = function(streamingPath) {
     return streamingPath;
 };
 
-var loadMedia = function(e, session) {
+var loadMedia = function(target, session) {
     clearInterval(mediaUpdateIntervalId);
 
-    var mediaPath = e.target.href;
+    var mediaPath = target.href;
 
     var mediaInfo = new chrome.cast.media.MediaInfo(mediaPath, 'video/mkv');
     var request = new chrome.cast.media.LoadRequest(mediaInfo);
@@ -63,13 +63,13 @@ var onMediaUpdate = function(joinedSession) {
 };
 
 var streamingMediaHandler = function(e) {
-    if (e.target.tagName.toUpperCase() !== 'A') { return; }
+    var target = e.target.parentElement;
 
-    var classNames = e.target.className;
+    if (!target || target.tagName.toUpperCase() !== 'A') { return; }
 
-    if (classNames.indexOf('file') === -1 && classNames.indexOf('channel') === -1) { return; }
+    if (target.href.indexOf('/stream/') === -1) { return; }
 
-    chrome.cast.requestSession(loadMedia.bind(null, e), noop);
+    chrome.cast.requestSession(loadMedia.bind(null, target), noop);
 
     e.preventDefault();
 };

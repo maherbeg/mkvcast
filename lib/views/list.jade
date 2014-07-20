@@ -39,7 +39,7 @@ body
             if ((x % 4 == 0))
                 .row
                     each channel, y in channels.slice(x, x + 4)
-                        .col-xs-6.col-md-3
+                        .col-xs-12.col-sm-3
                             .media
                                 .pull-left
                                     span.glyphicon.glyphicon-play &nbsp;
@@ -50,25 +50,23 @@ body
 
         each file, x in dirContents
             if ((x % 4 == 0))
-                .row
+                .row(style='min-height: 33px')
                     each file, y in dirContents.slice(x, x + 4)
-                        .col-xs-6.col-md-3
-                            .media
-                                if file.isDirectory
+                        .col-xs-12.col-sm-3
+                            if file.isDirectory
+                                .media
+
                                     .pull-left
                                         span.glyphicon.glyphicon-folder-open &nbsp;
                                     .media-body
                                         a(href='/list/' + file.filePath).directory= file.displayName
-                                else
-                                    .pull-left
-                                        span.glyphicon.glyphicon-play &nbsp;
-                                    .media-body
-                                        a(href='/stream/' + file.filePath).file= file.displayName
-                                        form(action='/channels/' + file.filePath, method='post')
-                                            input(type='submit', value='submit')
-                                        if file.mediaType === 'tv'
-                                            h4
-                                                small Ep. #{file.season}/#{file.episode}
+                            else
+                                a(href='/stream/' + file.filePath).clearfix.file
+                                    .span.glyphicon.glyphicon-play.pull-left &nbsp;
+                                    .span.pull-left= file.displayName
+                                    if file.mediaType === 'tv'
+                                        small.pull-right &nbsp;##{file.season}.#{file.episode}
+
 
     script.
         var formatTimeComponent = function(timeComponent) {
