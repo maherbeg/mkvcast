@@ -7,7 +7,7 @@ html
         script(type='text/javascript', src='https://www.gstatic.com/cv/js/sender/v1/cast_sender.js')
         script(type='text/javascript', src='/static/js/chromecast.js')
         style.
-          a:visited { color: #FF0000; }
+          a:visited { color: #4ac99e; }
 body
     .jumbotron
         .container
@@ -68,7 +68,7 @@ body
                                             input(type='submit', value='submit')
                                         if file.mediaType === 'tv'
                                             h4
-                                                small Ep. xx/xx
+                                                small Ep. #{file.season}/#{file.episode}
 
     script.
         var formatTimeComponent = function(timeComponent) {
