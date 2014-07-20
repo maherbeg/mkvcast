@@ -67,7 +67,7 @@ var streamingMediaHandler = function(e) {
 
     var classNames = e.target.className;
 
-    if (classNames.indexOf('file') !== -1 && classNames.indexOf('channel') !== -1) { return; }
+    if (classNames.indexOf('file') === -1 && classNames.indexOf('channel') === -1) { return; }
 
     chrome.cast.requestSession(loadMedia.bind(null, e), noop);
 
