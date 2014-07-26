@@ -13,7 +13,7 @@ cd mkvcast
 npm install
 npm install -g bower
 bower install
-node ./lib/mkvcast <config file>
+./bin/mkvcast <config file>
 open 'http://localhost:1338/list'
 ```
 
@@ -29,7 +29,7 @@ cd mkvcast
 npm install
 npm install -g bower
 bower install
-node ./lib/mkvcast <config file>
+./bin/mkvcast <config file>
 open 'http://localhost:1338/list'
 ```
 
