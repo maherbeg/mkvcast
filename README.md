@@ -18,7 +18,7 @@ open 'http://localhost:1338/list'
 ```
 
 ### FreeBsd
-You should install everything from a [FreeBSD Jail](www.freebsd.org/doc/handbook/jails-build.html)
+You should install everything from a [FreeBSD Jail](http://www.freebsd.org/doc/handbook/jails-build.html)
 ```bash
 pkg install ffmpeg
 pkg install node
