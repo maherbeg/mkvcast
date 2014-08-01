@@ -33,6 +33,24 @@ bower install
 open 'http://localhost:1338/list'
 ```
 
+### Windows
+Currently broken, path handling needs to be fixed for this platform. See #18
+
+Download and run an installer from http://nodejs.org/download/ (you will also need git installed from http://git-scm.com/download/win)
+Then from `cmd` or `powershell`:
+```bash
+git clone https://github.com/maherbeg/mkvcast.git
+cd mkvcast
+npm install
+npm install -g bower
+bower install
+node lib\mkvcast.js C:\full\path\to\config.json
+```
+
+*Note: For the moment on Windows, you'll need to escape paths in config.json - e.g. C:\Movies becomes C:\\Movies*
+
+
+
 ## Configuration
 ### config.json
 The following keys need to be saved in a `config.json` that is passed into the application.
@@ -45,6 +63,8 @@ The following keys need to be saved in a `config.json` that is passed into the a
     ]
 }
 ```
+
+
 
 #### channels
 A channel is a set of directories to randomly view videos from. Think of it as a shuffled
