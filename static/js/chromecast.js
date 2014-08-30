@@ -17,7 +17,7 @@ var extractMediaFileNameFromPath = function(streamingPath) {
 var loadMedia = function(target, session) {
     clearInterval(mediaUpdateIntervalId);
 
-    var mediaPath = target.href;
+    var mediaPath = target.href + startTimeClickHandler();
 
     var mediaInfo = new chrome.cast.media.MediaInfo(mediaPath, 'video/mkv');
     var request = new chrome.cast.media.LoadRequest(mediaInfo);
@@ -63,6 +63,14 @@ var onMediaUpdate = function(joinedSession) {
     }
 
     document.getElementById('now-playing').innerText = streamingPath;
+};
+
+var startTimeClickHandler = function() {
+    var startTime = document.getElementById('startTime').value;
+    if (!startTime) { return ''; }
+    if (startTime.split(':').length !== 3) { return ''; }
+
+    return '?startTime=' + startTime;
 };
 
 var streamingMediaHandler = function(e) {

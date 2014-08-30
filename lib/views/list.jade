@@ -78,11 +78,3 @@ body
                 ? formatTimeComponent(seconds / 3600) + ':' + formatTimeComponent(seconds / 60) + ':' + formatTimeComponent(seconds % 60)
                 : ''
         };
-
-        var startTimeClickHandler = function() {
-            var startTime = document.getElementById('startTime').value;
-            if (!startTime) { return; }
-            if (startTime.split(':').length !== 3) { return; }
-
-            this.href = this.href + '?startTime=' + startTime;
-        };
